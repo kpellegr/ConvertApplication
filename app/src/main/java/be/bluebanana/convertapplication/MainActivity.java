@@ -15,9 +15,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragmentCelsius = new TempFragment();
-        fragmentFahrenheit = new TempFragment();
-        fragmentKelvin = new TempFragment();
+        fragmentCelsius = new TempFragment("Celsius");
+        fragmentFahrenheit = new TempFragment("Fahrenheit");
+        fragmentKelvin = new TempFragment("Kelvin");
 
         fragmentCelsius.setTempFragmentListener(input -> {
             fragmentFahrenheit.updateTemp(input * 9f / 5f + 32f);

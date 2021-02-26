@@ -5,9 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:gravity="left"
     android:padding="16dp"
     tools:context=".TempFragment">
+
+    <TextView
+        android:id="@+id/tv_fullname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/et_temp"
@@ -15,10 +20,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <Button
-        android:id="@+id/button_convert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Convert"/>
 </LinearLayout>

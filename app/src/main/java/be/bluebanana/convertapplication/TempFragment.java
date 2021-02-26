@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class TempFragment extends Fragment {
 
@@ -20,9 +21,10 @@ public class TempFragment extends Fragment {
 
     private EditText etTemp;
     private TempFragmentListener listener;
+    private String fullName;
 
-    public TempFragment() {
-        // Required empty public constructor
+    public TempFragment(String fullname_) {
+        this.fullName = fullname_;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class TempFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_temp, container, false);
 
         etTemp = v.findViewById(R.id.et_temp);
+        ((TextView)v.findViewById(R.id.tv_fullname)).setText(fullName);
 
         MyTextWatcher textWatcher = new MyTextWatcher(listener);
 
@@ -42,11 +45,6 @@ public class TempFragment extends Fragment {
             else {
                 etTemp.removeTextChangedListener(textWatcher);
             }
-        });
-
-        v.findViewById(R.id.button_convert).setOnClickListener(bv -> {
-            String input = etTemp.getText().toString();
-            listener.onInputSent(Float.parseFloat(input));
         });
 
         return v;
