@@ -13,18 +13,22 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 public class TempFragment extends Fragment {
 
     public interface TempFragmentListener {
         void onInputSent(float temp);
     }
 
-    private EditText etTemp;
+    private TextInputEditText etTemp;
+    private TextInputLayout tilTemp;
     private TempFragmentListener listener;
-    private String fullName;
+    private String symbol;
 
-    public TempFragment(String fullname_) {
-        this.fullName = fullname_;
+    public TempFragment(String symbol_) {
+        this.symbol = symbol_;
     }
 
     @Override
@@ -34,9 +38,10 @@ public class TempFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_temp, container, false);
 
         etTemp = v.findViewById(R.id.et_temp);
-        ((TextView)v.findViewById(R.id.tv_fullname)).setText(fullName);
+        tilTemp = v.findViewById(R.id.til_temp);
+        tilTemp.setSuffixText(symbol);
 
-        MyTextWatcher textWatcher = new MyTextWatcher(listener);
+        MyTextWatcher textWatcher = new MyTextWatcher(listener, tilTemp);
 
         etTemp.setOnFocusChangeListener((v1, hasFocus) -> {
             if (hasFocus) {
@@ -53,6 +58,7 @@ public class TempFragment extends Fragment {
     // Ontvangt data van buitenaf
     public void updateTemp(float temp) {
         etTemp.setText(String.format("%.2f", temp));
+        tilTemp.setError(null);
     }
 
     public void setTempFragmentListener (TempFragmentListener tf_listener) {
@@ -62,9 +68,11 @@ public class TempFragment extends Fragment {
     static class MyTextWatcher implements TextWatcher {
 
         TempFragmentListener listener;
+        TextInputLayout tilTemp;
 
-        public MyTextWatcher (TempFragmentListener listener) {
+        public MyTextWatcher (TempFragmentListener listener, TextInputLayout tilTemp) {
             this.listener = listener;
+            this.tilTemp = tilTemp;
         }
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -79,10 +87,13 @@ public class TempFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             float temp = 0f;
+            tilTemp.setError(null);
             try {
                 temp = Float.parseFloat(s.toString());
             }
-            catch (NumberFormatException ignored) {}
+            catch (NumberFormatException e) {
+                tilTemp.setError("Gelieve een getal in te geven");
+            }
             listener.onInputSent(temp);
         }
     }
