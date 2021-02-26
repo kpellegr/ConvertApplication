@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,18 @@ public class TempFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_temp, container, false);
 
         etTemp = v.findViewById(R.id.et_temp);
+
+        MyTextWatcher textWatcher = new MyTextWatcher(listener);
+
+        etTemp.setOnFocusChangeListener((v1, hasFocus) -> {
+            if (hasFocus) {
+                etTemp.addTextChangedListener(textWatcher);
+            }
+            else {
+                etTemp.removeTextChangedListener(textWatcher);
+            }
+        });
+
         v.findViewById(R.id.button_convert).setOnClickListener(bv -> {
             String input = etTemp.getText().toString();
             listener.onInputSent(Float.parseFloat(input));
@@ -38,19 +52,40 @@ public class TempFragment extends Fragment {
         return v;
     }
 
-    // Ontvangt data van buitenaf (bvb als er in Fragment B op "ok" wordt gedrukt
+    // Ontvangt data van buitenaf
     public void updateTemp(float temp) {
         etTemp.setText(String.format("%.2f", temp));
     }
 
     public void setTempFragmentListener (TempFragmentListener tf_listener) {
-        if (tf_listener instanceof TempFragmentListener) {
-            this.listener = (TempFragmentListener)tf_listener;
+        this.listener = (TempFragmentListener)tf_listener;
+    }
+
+    static class MyTextWatcher implements TextWatcher {
+
+        TempFragmentListener listener;
+
+        public MyTextWatcher (TempFragmentListener listener) {
+            this.listener = listener;
         }
-        else {
-            throw new RuntimeException(
-                    String.format("%s must implement TempFragmentListener", tf_listener.toString())
-            );
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // intentionally left blank
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // intentionally left blank
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            float temp = 0f;
+            try {
+                temp = Float.parseFloat(s.toString());
+            }
+            catch (NumberFormatException ignored) {}
+            listener.onInputSent(temp);
         }
     }
 }

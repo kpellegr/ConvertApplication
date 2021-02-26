@@ -9,7 +9,7 @@ public class MainActivity extends AppCompatActivity {
     private TempFragment fragmentCelsius;
     private TempFragment fragmentFahrenheit;
     private TempFragment fragmentKelvin;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
